@@ -1,0 +1,61 @@
+"""
+A generic dataset model
+"""
+from __future__ import annotations
+
+from invenio_i18n import lazy_gettext as _
+from invenio_records_permissions.generators import AuthenticatedUser
+from oarepo_model.api import model
+from oarepo_model.customizations import PrependMixin, AddMetadataExport
+from oarepo_model.model import ModelMixin
+from oarepo_model.presets.drafts import drafts_preset
+from oarepo_model.presets.records_resources import records_resources_preset
+from oarepo_model.presets.ui_links import ui_links_preset
+from oarepo_model.datatypes.registry import from_yaml
+from ccmm_invenio.models import ccmm_production_preset_1_1_0
+
+from .serializers import DataCiteJSONSerializer
+
+class DatasetPermissionPolicyMixin(ModelMixin):
+    """Custom permission policy for dataset."""
+
+    can_view_deposit_page = [AuthenticatedUser()]
+
+
+# TODO: Consider letting users add an image/icon for the model,
+# so that the deposit model selection page is more visually appealing.
+dataset_model = model(
+    "dataset",
+    version="1.0.0",
+    description="A generic dataset model",
+    presets=[
+
+        ccmm_production_preset_1_1_0
+
+    ],
+    types=[
+        from_yaml("metadata.yaml", __file__)
+    ],
+    metadata_type="Metadata",
+    customizations=[
+        # Add your customizations here, such as custom exports and class mixins. 
+        # The list of available extensions is at https://github.com/oarepo/oarepo-model.
+        # If you do not find a customization that suits your needs or need a
+        # help with using customizations, please contact us at support@cesnet.cz and
+        # specify the keyword "Invenio repository development" inside the subject or
+        # mail body of the request.
+        # TODO: remove this customization if you use oarepo-communities for RDM 14
+        PrependMixin("PermissionPolicy", DatasetPermissionPolicyMixin), 
+
+        # export for datacite
+        AddMetadataExport(
+            code="datacite",
+            name=_("Datacite export"),
+            mimetype="application/vnd.datacite.datacite+json",
+            serializer=DataCiteJSONSerializer()
+        ),
+    ],
+    configuration={
+        "ui_blueprint_name": "dataset_ui"
+    }
+)

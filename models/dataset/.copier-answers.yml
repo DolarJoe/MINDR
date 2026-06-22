@@ -1,0 +1,6 @@
+# Changes here will be overwritten by Copier
+_commit: 25ccf15
+_src_path: https://github.com/oarepo/nrp-model-copier
+base_model: ccmm
+model_description: A generic dataset model
+model_human_name: Dataset
