@@ -6,7 +6,7 @@
     Brand Colors
 --------------------*/
 
-@livelyGreen: #008691;
+@livelyGreen: #7AC143;
 @pink: #ff5b7f;
 
 @primaryColor: @livelyGreen;
