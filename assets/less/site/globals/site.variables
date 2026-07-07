@@ -6,7 +6,7 @@
     Brand Colors
 --------------------*/
 
-@livelyGreen: #008691;
+@livelyGreen: #7AC143;
 @pink: #ff5b7f;
 
 @primaryColor: @livelyGreen;
@@ -51,7 +51,7 @@
 @footerTextLightColor: #ffffff;
 @footerTextDarkColor: #ffffff;
 
-@navbar_background_image: linear-gradient(165deg, #008691, #008691, #00848e, #007e88, #00737d, #006971, #00636b, #006169, #006169);
+@navbar_background_image: linear-gradient(165deg, #7AC143, #447e18);
 @navbar_background_color: @brandColor;
 
 @coverPageBackgroundColor: @livelyGreen;
