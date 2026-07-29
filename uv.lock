@@ -3077,7 +3077,7 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
-    { name = "oarepo", extras = ["s3", "rdm"], specifier = "<=14.2.1rc2" },
+    { name = "oarepo", extras = ["s3", "rdm"], specifier = "==14.2.1rc2" },
     { name = "oarepo-app", extras = ["production", "ccmm"], specifier = "==6.3.0" },
 ]
 
