@@ -9,6 +9,7 @@ from oarepo_ui.resources.components import (
     RecordRestrictionComponent,
     PermissionsComponent,
 )
+from oarepo_ui.resources.components.base import UIResourceComponent
 from oarepo_ui.resources.components.custom_fields import CustomFieldsComponent
 from oarepo_ui.resources.records.config import RecordsUIResourceConfig
 from oarepo_ui.resources.records.resource import RecordsUIResource
@@ -22,6 +23,28 @@ from oarepo_rdm.ui.components import (
     CommunitiesMembershipsComponent,
     RDMVocabularyOptionsComponent,
 )
+
+class FilesEnabledEmptyRecordComponent(UIResourceComponent):
+    """Enable files by default on the empty deposit record.
+
+    The dataset model's empty record (built via ``dump_empty``) ships with
+    ``files.enabled`` set to ``None``. Invenio RDM's deposit record serializer
+    (:py:meth:`RDMDepositRecordSerializer._removeEmptyValues`) drops every key
+    whose value is empty/null, so the whole ``files`` object is stripped from
+    the formik initial values. The deposit ``AccessRightField`` then crashes
+    with ``TypeError: ... values.files is undefined`` when reading
+    ``formik.form.values.files.enabled``.
+
+    Setting ``enabled`` to ``True`` (a boolean, which the serializer keeps)
+    ensures ``files`` survives into the formik values and matches the standard
+    Invenio RDM behaviour where a new draft has files enabled.
+    """
+
+    def empty_record(self, *, empty_data, **kwargs):
+        """Ensure the empty record advertises files as enabled."""
+        empty_data.setdefault("files", {})
+        empty_data["files"]["enabled"] = True
+
 
 class DatasetUIResourceConfig(RecordsUIResourceConfig):
     template_folder = "templates"
@@ -44,6 +67,7 @@ class DatasetUIResourceConfig(RecordsUIResourceConfig):
         CustomFieldsComponent,
         RecordRestrictionComponent,
         EmptyRecordAccessComponent,
+        FilesEnabledEmptyRecordComponent,
         FilesLockedComponent,
         FilesQuotaAndTransferComponent,
     ]

@@ -9,6 +9,27 @@ import { buildUID } from "react-searchkit";
 import { CompactStats } from "@js/invenio_app_rdm/components/CompactStats";
 import { DisplayPartOfCommunities } from "@js/invenio_app_rdm/components/DisplayPartOfCommunities";
 
+/**
+ * CCMM datasets store their descriptions in `metadata.additional_descriptions`
+ * (RDM format: `{description, type, lang}`), not in a flat `metadata.description`.
+ * The stock `ui.description_stripped` is therefore always empty for this model,
+ * so derive the search-card description from the abstract description here.
+ */
+function stripHtml(html) {
+  if (!html) return "";
+  const tmp = document.createElement("div");
+  tmp.innerHTML = html;
+  return (tmp.textContent || tmp.innerText || "").replace(/\s+/g, " ").trim();
+}
+
+function getAdditionalDescription(result) {
+  const descs = _get(result, "metadata.additional_descriptions", []);
+  if (!descs.length) return "";
+  const abstract = descs.find((d) => _get(d, "type.id") === "abstract");
+  const desc = (abstract || descs[0]).description || "";
+  return stripHtml(desc);
+}
+
 class ResultsListItem extends Component {
   render() {
     const { currentQueryState, result, appName } = this.props;
@@ -24,11 +45,10 @@ class ResultsListItem extends Component {
 
     const creators = _get(result, "ui.creators.creators", []);
 
-    const descriptionStripped = _get(
-      result,
-      "ui.description_stripped",
-      i18next.t("No description")
-    );
+    const descriptionStripped =
+      _get(result, "ui.description_stripped") ||
+      getAdditionalDescription(result) ||
+      i18next.t("No description");
 
     const publicationDate = _get(
       result,
