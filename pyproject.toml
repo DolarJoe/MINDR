@@ -31,6 +31,12 @@ ui_dataset = "ui.dataset:finalize_app"
 mindr = "common.cli:create_cli"
 
 
+[tool.uv]
+prerelease = "allow"
+
+[[tool.uv.index]]
+url = "https://gitlab.cesnet.cz/api/v4/projects/1408/packages/pypi/simple"
+
 [tool.uv.build-backend]
 module-root = ""
 module-name = ["common", "i18n", "ui", "models"]
